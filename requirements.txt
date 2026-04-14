@@ -1,0 +1,17 @@
+# ObjectDetectionSoup – Python dependencies
+#
+# Core dependencies (always required)
+numpy>=1.24
+
+# Testing
+pytest>=7.4
+pytest-cov>=4.1
+
+# Optional heavy dependencies (required for actual training / evaluation)
+# Install these separately when running on a GPU machine with CUDA.
+#
+# torch>=2.0          # PyTorch 2.x
+# torchvision>=0.15
+# detectron2          # Install from source or pinned commit hash – see README
+# pyhessian>=0.1      # Hutchinson Hessian trace estimation
+# pycocotools>=2.0    # COCO evaluation
