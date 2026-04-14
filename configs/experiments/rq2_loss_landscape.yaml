@@ -1,0 +1,33 @@
+# RQ2: Per-Component Loss Landscape Geometry
+# Tests H2: backbone subspace has lower loss barrier than head subspace.
+
+experiment:
+  name: "rq2_loss_landscape"
+  hypothesis: "H2"
+  output_dir: "results/rq2/"
+
+model_pairs:
+  # Pairs of ingredient run IDs to compute barriers between
+  - ["L1", "L2"]
+  - ["L1", "L3"]
+  - ["L1", "L4"]
+  - ["L2", "L3"]
+  - ["L2", "L4"]
+  - ["L3", "L4"]
+
+barrier:
+  components: ["backbone", "encoder", "cls", "reg", "all"]  # "all" = whole-model baseline
+  interpolation_steps: 15                # t ∈ {0/14, 1/14, ..., 14/14}
+  eval_dataset: "coco_2017_mini_val"     # Use 500-img mini-val for speed
+
+hessian:
+  enabled: true
+  components: ["backbone", "encoder", "cls", "reg"]
+  method: "hutchinson"                   # Stochastic Tr(H_c) estimator
+  n_samples: 50                          # Number of Rademacher probe vectors
+  eval_dataset: "coco_2017_mini_val"     # 500-img mini-val to keep runtime < 30 min
+
+critical_sharpness:
+  enabled: true
+  rho: 0.05                             # Perturbation radius for Liu et al. 2026 metric
+  components: ["backbone", "encoder", "cls", "reg"]

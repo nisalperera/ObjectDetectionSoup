@@ -1,0 +1,19 @@
+# RQ4: Cross-Family Generalisation (Stub — deferred; YOLOF only at present)
+# Tests H4: gains consistent across families; optimal coefficients differ by family.
+
+experiment:
+  name: "rq4_cross_family"
+  hypothesis: "H4"
+  output_dir: "results/rq4/"
+  status: "STUB"                        # Not yet implemented; placeholder only
+
+families:
+  - name: "yolof"
+    enabled: true
+    adapter: "rq4_cross_family.family_adapters.yolof_adapter"
+  - name: "faster_rcnn"
+    enabled: false                      # Deferred
+    adapter: "rq4_cross_family.family_adapters.faster_rcnn_adapter"
+  - name: "deformable_detr"
+    enabled: false                      # Deferred
+    adapter: "rq4_cross_family.family_adapters.detr_adapter"

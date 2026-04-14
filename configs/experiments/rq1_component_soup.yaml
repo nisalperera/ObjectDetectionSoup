@@ -1,0 +1,35 @@
+# RQ1: Component-Specific vs. Global Averaging
+# Tests H1: component-specific averaging achieves higher COCO mAP than global uniform averaging.
+
+experiment:
+  name: "rq1_component_soup"
+  hypothesis: "H1"
+  output_dir: "results/rq1/"
+
+ingredients:
+  run_ids: ["L1", "L2", "L3", "L4"]    # Default pool; can add C1/C2
+  checkpoint_dir: "checkpoints/ingredients/"
+
+strategies:
+  - name: "global_uniform"              # Condition 1 baseline
+    enabled: true
+  - name: "branch_uniform"              # Condition 2: partition only
+    enabled: true
+  - name: "component_grid_search"       # Condition 3a: 3-component grid
+    enabled: true
+    grid:
+      backbone: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+      encoder:  [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+      head:     [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+    refine_step: 0.05                   # Fine-grid refinement around best point
+  - name: "ties_global"                 # TIES-Merging applied globally
+    enabled: true
+    trim_fraction: 0.2                  # Keep top 20% of |delta| per component
+  - name: "ties_component"              # TIES-Merging applied per component
+    enabled: true
+    trim_fraction: 0.2
+
+evaluation:
+  dataset: "coco_2017_val"
+  mini_val: true                        # Use 500-img mini-val for grid search
+  metrics: ["AP", "AP50", "AP75", "APs", "APm", "APl"]

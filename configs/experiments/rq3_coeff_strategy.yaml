@@ -1,0 +1,44 @@
+# RQ3: Mixing Coefficient Learning Strategies
+# Tests H3: learned per-component coefficients outperform fixed equal-weight averaging.
+
+experiment:
+  name: "rq3_coeff_strategy"
+  hypothesis: "H3"
+  output_dir: "results/rq3/"
+
+ingredients:
+  run_ids: ["L1", "L2", "L3", "L4"]
+  checkpoint_dir: "checkpoints/ingredients/"
+
+granularity:
+  - "global"          # Single scalar for entire model
+  - "per_component"   # Separate scalar per {backbone, encoder, cls, reg}
+
+strategies:
+  fixed_equal:
+    enabled: true
+
+  grid_search:
+    enabled: true
+    coarse_points: [0.2, 0.4, 0.6, 0.8, 1.0]  # 5-point coarse grid
+    refine: true
+    refine_step: 0.05
+
+  fisher_weighted:
+    enabled: true
+    n_calibration_batches: 50           # Batches for empirical Fisher estimation
+    calibration_dataset: "coco_2017_mini_val"
+
+  entropy_minimization:
+    enabled: true
+    n_steps: 100
+    lr: 0.01
+    unlabeled_dataset: "coco_2017_test"  # Unlabeled test images (no annotations used)
+    confidence_threshold: 0.05          # Min confidence to include box in entropy sum
+    proxy_validation:
+      enabled: true                     # Run proxy validation BEFORE full AdaMerging
+      n_grid_points: 20                 # Merged models used to compute Pearson r
+
+evaluation:
+  dataset: "coco_2017_val"
+  metrics: ["AP", "AP50", "AP75"]

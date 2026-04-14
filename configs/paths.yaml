@@ -1,0 +1,19 @@
+# Shared path configuration
+# Adjust these paths to match your local environment.
+
+coco:
+  root: "/data/coco"                    # COCO dataset root
+  train: "${coco.root}/train2017"
+  val: "${coco.root}/val2017"
+  annotations: "${coco.root}/annotations"
+  mini_val_ids: "configs/mini_val_500.txt"  # 500-image mini-val IDs for fast ablations
+
+checkpoints:
+  pretrained: "checkpoints/yolof_R_50_C5_1x.pth"   # theta_0: COCO pre-trained YOLOF-R50
+  ingredients_dir: "checkpoints/ingredients/"       # L1-L4, C1-C2 checkpoints
+  output_dir: "results/"                            # All experiment outputs go here
+
+detectron2:
+  config: "configs/yolof/YOLOF_Release_R_50_C5_1x.yaml"  # Detectron2 YOLOF config file
+  device: "cuda"
+  num_workers: 4
